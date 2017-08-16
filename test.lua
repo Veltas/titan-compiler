@@ -3837,6 +3837,35 @@ r = typecheck(s)
 check(e, r)
 
 s = [=[
+local mod = { x = 0 }
+
+function mod:foo()
+  local function inner () return self.x end
+  return
+end
+]=]
+e = [=[
+{ `Local{ { `Id "mod" }, { `Table{ `Pair{ `String "x", `Number "0" } } } }, `Set{ { `Index{ `Id "mod", `String "foo" } }, { `Function{ { `Id "self":`TSelf }, { `Localrec{ { `Id "inner":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ {  }, { `Return{ `Index{ `Id "self", `String "x" } } } } } }, `Return } } } } }
+]=]
+
+r = typecheck(s)
+check(e, r)
+
+s = [=[
+local mod = { x = 0 }
+
+function mod:foo()
+  return function () return self.x end
+end
+]=]
+e = [=[
+{ `Local{{ `Id "mod" },{ `Table{ `Pair{ `String "x", `Number "0" } } } }, `Set{{ `Index{ `Id "mod", `String "foo" } },{ `Function{{ `Id "self":`TSelf },{ `Return{ `Function{{ },{ `Return{ `Index{ `Id "self", `String "x" } } } } } } } } } }
+]=]
+
+r = typecheck(s)
+check(e, r)
+
+s = [=[
 local function f ():() return end
 local function g (x:number):(number)?
   if x < 0 then

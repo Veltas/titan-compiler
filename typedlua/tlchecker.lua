@@ -830,7 +830,7 @@ end
 
 local function check_function (env, exp, tself)
   local oself = env.self
-  env.self = tself
+  env.self = tself or env.self
   local idlist, ret_type, block = exp[1], replace_names(env, exp[2], exp.pos), exp[3]
   local infer_return = false
   if not block then
