@@ -42,7 +42,8 @@ local G = lpeg.P { "TypedLua";
   BaseType = tllexer.token("boolean", "Type") / tltype.Boolean +
              tllexer.token("number", "Type") / tltype.Number +
              tllexer.token("string", "Type") / tltype.String +
-             tllexer.token("integer", "Type") * lpeg.Carg(3) / tltype.Integer;
+             tllexer.token("integer", "Type") * lpeg.Carg(3) / tltype.Integer +
+             tllexer.token("float", "Type") * lpeg.Carg(3) / tltype.Float;
   NilType = tllexer.token("nil", "Type") / tltype.Nil;
   ValueType = tllexer.token("value", "Type") / tltype.Value;
   AnyType = tllexer.token("any", "Type") / tltype.Any;

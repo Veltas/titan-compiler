@@ -55,8 +55,8 @@ function tltype.isNum (t)
   return tltype.isLiteral(t) and type(t[1]) == "number"
 end
 
--- isFloat : (type) -> (boolean)
-function tltype.isFloat (t)
+-- isDouble : (type) -> (boolean)
+function tltype.isDouble (t)
   if _VERSION == "Lua 5.3" then
     return tltype.isLiteral(t) and math.type(t[1]) == "float"
   else
@@ -109,6 +109,11 @@ function tltype.Integer (i)
   if i then return tltype.Base("integer") else return tltype.Base("number") end
 end
 
+-- Float : (boolean?) -> (type)
+function tltype.Float (i)
+  if i then return tltype.Base("float") else return tltype.Base("number") end
+end
+
 -- isBase : (type) -> (boolean)
 function tltype.isBase (t)
   return t.tag == "TBase"
@@ -132,6 +137,11 @@ end
 -- isInteger : (type) -> (boolean)
 function tltype.isInteger (t)
   return tltype.isBase(t) and t[1] == "integer"
+end
+
+-- isFloat : (type) -> (boolean)
+function tltype.isFloat (t)
+  return tltype.isBase(t) and t[1] == "float"
 end
 
 -- nil type
@@ -684,6 +694,8 @@ local function subtype_literal (env, t1, t2)
       return tltype.isStr(t1)
     elseif tltype.isInteger(t2) then
       return tltype.isInt(t1)
+    elseif tltype.isFloat(t2) then
+      return tltype.isDouble(t1)
     else
       return false
     end
@@ -694,7 +706,7 @@ end
 
 local function subtype_base (env, t1, t2)
   if tltype.isBase(t1) and tltype.isBase(t2) then
-    return t1[1] == t2[1] or (tltype.isInteger(t1) and tltype.isNumber(t2))
+    return t1[1] == t2[1] or ((tltype.isInteger(t1) or tltype.isFloat(t1)) and tltype.isNumber(t2))
   else
     return false
   end
