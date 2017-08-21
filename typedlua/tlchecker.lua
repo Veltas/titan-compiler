@@ -653,7 +653,9 @@ local function check_binary_op (env, exp)
     check_concat(env, exp)
   elseif op == "eq" then
     return check_equal(env, exp)
-  elseif op == "lt" or op == "le" then
+  elseif op == "ne" then
+    return tlfilter.set_not(check_equal(env, exp))
+  elseif op == "le" or op == "lt" or op == "ge" or op == "gt" then
     check_order(env, exp)
   elseif op == "and" then
     return check_and(env, exp)

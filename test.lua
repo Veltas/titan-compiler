@@ -685,7 +685,7 @@ repeat
 until 1
 ]=]
 e = [=[
-{ `Repeat{ { `If{ `Op{ "lt", `Number "1", `Number "2" }, { `Break } } }, `Number "1" } }
+{ `Repeat{ { `If{ `Op{ "gt", `Number "2", `Number "1" }, { `Break } } }, `Number "1" } }
 ]=]
 
 r = parse(s)
@@ -840,6 +840,28 @@ function testando . funcao . com : espcacos ( e, com , parametros, ... ) end
 ]=]
 e = [=[
 { `Set{ { `Index{ `Index{ `Index{ `Index{ `Id "_ENV", `String "testando" }, `String "funcao" }, `String "com" }, `String "espcacos" } }, { `Function{ { `Id "self", `Id "e", `Id "com", `Id "parametros", `Dots }, {  } } } } }
+]=]
+
+r = parse(s)
+check(e, r)
+
+s = [=[
+gl_f_ct = 0
+
+function f()
+    if gl_f_ct <= 0 then
+        gl_f_ct=1
+        return 1000
+    end
+    return -1000
+end
+
+print( f("1st call") > f("2nd call") )
+gl_f_ct = 0
+print( f("1st call") < f("2nd call") )
+]=]
+e = [=[
+{ `Set{{ `Index{ `Id "_ENV", `String "gl_f_ct" } },{ `Number "0" } }, `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ },{ `If{ `Op{"le", `Index{ `Id "_ENV", `String "gl_f_ct" }, `Number "0" },{ `Set{{ `Index{ `Id "_ENV", `String "gl_f_ct" } },{ `Number "1" } }, `Return{ `Number "1000" } } }, `Return{ `Op{"unm", `Number "1000" } } } } } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Op{"gt", `Call{ `Index{ `Id "_ENV", `String "f" }, `String "1st call" }, `Call{ `Index{ `Id "_ENV", `String "f" }, `String "2nd call" } } }, `Set{{ `Index{ `Id "_ENV", `String "gl_f_ct" } },{ `Number "0" } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Op{"lt", `Call{ `Index{ `Id "_ENV", `String "f" }, `String "1st call" }, `Call{ `Index{ `Id "_ENV", `String "f" }, `String "2nd call" } } } }
 ]=]
 
 r = parse(s)
@@ -1157,7 +1179,7 @@ s = [=[
 local relational = 1 < 2 >= 3 == 4 ~= 5 < 6 <= 7
 ]=]
 e = [=[
-{ `Local{ { `Id "relational" }, { `Op{ "le", `Op{ "lt", `Op{ "not", `Op{ "eq", `Op{ "eq", `Op{ "le", `Number "3", `Op{ "lt", `Number "1", `Number "2" } }, `Number "4" }, `Number "5" } }, `Number "6" }, `Number "7" } } } }
+{ `Local{{ `Id "relational" },{ `Op{"le", `Op{"lt", `Op{"ne", `Op{"eq", `Op{"ge", `Op{"lt", `Number "1", `Number "2" }, `Number "3" }, `Number "4" }, `Number "5" }, `Number "6" }, `Number "7" } } } }
 ]=]
 
 r = parse(s)
@@ -3184,8 +3206,7 @@ end
 end
 ]=]
 e = [=[
-{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Op{"not", `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" },
- `Id "x" }, `String "number" } },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number "1" } } } } } } } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Op{"ne", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "number" },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number "1" } } } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3891,7 +3912,7 @@ local function h (x:number):(number)?
 end
 ]=]
 e = [=[
-{ `Localrec{ { `Id "f":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } } }, { `Function{ {  }:`TTuple{ `TVararg{ `TNil } }, { `Return } } } }, `Localrec{ { `Id "g":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } }, { `Function{ { `Id "x":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } }, { `If{ `Op{ "lt", `Id "x", `Number "0" }, { `Return{ `Nil, `String "negative" } }, { `Return{ `Id "x" } } } } } } }, `Localrec{ { `Id "h":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } }, { `Function{ { `Id "x":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } }, { `If{ `Op{ "lt", `Number "0", `Id "x" }, { `Return{ `Id "x" } }, { `Return{ `Call{ `Id "g", `Id "x" } } } } } } } } }
+{ `Localrec{{ `Id "f":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } } },{ `Function{{ }:`TTuple{ `TVararg{ `TNil } },{ `Return } } } }, `Localrec{{ `Id "g":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } },{ `Function{{ `Id "x":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } },{ `If{ `Op{"lt", `Id "x", `Number "0" },{ `Return{ `Nil, `String "negative" } },{ `Return{ `Id "x" } } } } } } }, `Localrec{{ `Id "h":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } },{ `Function{{ `Id "x":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } },{ `If{ `Op{"gt", `Id "x", `Number "0" },{ `Return{ `Id "x" } },{ `Return{ `Call{ `Id "g", `Id "x" } } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -6075,11 +6096,11 @@ f = 1 >= 2
 ]=]
 e = [=[
 a = 1 == 2
-b = not (1 == 2)
+b = 1 ~= 2
 c = 1 < 2
 d = 1 <= 2
-e = 2 < 1
-f = 2 <= 1
+e = 1 > 2
+f = 1 >= 2
 
 ]=]
 
@@ -6257,6 +6278,35 @@ local function f (...) end
 ]=]
 e = [=[
 local function f (...)  end
+]=]
+
+r = generate(s)
+check(e, r)
+
+-- globals
+
+s = [=[
+gl_f_ct = 0
+
+function f()
+    if gl_f_ct <= 0 then
+        gl_f_ct=1
+        return 1000
+    end
+    return -1000
+end
+
+print( f("1st call") > f("2nd call") )
+gl_f_ct = 0
+print( f("1st call") < f("2nd call") )
+]=]
+e = [=[
+gl_f_ct =0
+f =function ()if gl_f_ct <=0 then gl_f_ct =1 return 1000 end return -(1000)
+end
+print(f("1st call") >f("2nd call"))
+gl_f_ct =0
+print(f("1st call") <f("2nd call"))
 ]=]
 
 r = generate(s)

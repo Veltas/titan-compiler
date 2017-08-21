@@ -46,8 +46,8 @@ lhs: ident | `Index{ expr expr }
 ident: `Id{ <string> type? }
 
 opid: 'add' | 'sub' | 'mul' | 'div' | 'idiv' | 'mod' | 'pow' | 'concat'
-  | 'band' | 'bor' | 'bxor' | 'shl' | 'shr' | 'eq' | 'lt' | 'le'
-  | 'and' | 'or' | 'not' | 'unm' | 'len' | 'bnot'
+  | 'band' | 'bor' | 'bxor' | 'shl' | 'shr' | 'eq' | 'ne' | 'lt' | 'gt'
+  | 'le' | 'ge' | 'and' | 'or' | 'not' | 'unm' | 'len' | 'bnot'
 
 type:
   `TLiteral{ literal }
@@ -300,31 +300,8 @@ end
 function tlast.exprBinaryOp (e1, op, e2)
   if not op then
     return e1
-  elseif op == "add" or
-         op == "sub" or
-         op == "mul" or
-         op == "idiv" or
-         op == "div" or
-         op == "mod" or
-         op == "pow" or
-         op == "concat" or
-         op == "band" or
-         op == "bor" or
-         op == "bxor" or
-         op == "shl" or
-         op == "shr" or
-         op == "eq" or
-         op == "lt" or
-         op == "le" or
-         op == "and" or
-         op == "or" then
+  else
     return { tag = "Op", pos = e1.pos, [1] = op, [2] = e1, [3] = e2 }
-  elseif op == "ne" then
-    return tlast.exprUnaryOp ("not", tlast.exprBinaryOp(e1, "eq", e2))
-  elseif op == "gt" then
-    return { tag = "Op", pos = e1.pos, [1] = "lt", [2] = e2, [3] = e1 }
-  elseif op == "ge" then
-    return { tag = "Op", pos = e1.pos, [1] = "le", [2] = e2, [3] = e1 }
   end
 end
 
