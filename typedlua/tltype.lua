@@ -12,6 +12,7 @@ tltype.integer = false
 
 -- Literal : (boolean|number|string) -> (type)
 function tltype.Literal (l)
+  if type(l) == "table" then l = l[1] end -- TODO: fix this hack when implementing integer and float types
   return { tag = "TLiteral", [1] = l }
 end
 
@@ -1173,10 +1174,12 @@ local function type2str (t, n)
     return t.name
   elseif tltype.isPrim(t) then
     return "built-in function " .. t[1]
-  elseif tltype.isTrue(t) or tltype.isFalse(t) or tltype.isNum(t) then
-    return tostring(t[1])
   elseif tltype.isLiteral(t) then
-    return string.format("%q", t[1])
+    if type(t[1]) == "table" then
+      return string.format("%q", t[1][1])
+    else
+      return string.format("%q", t[1])
+    end
   elseif tltype.isBase(t) then
     return t[1]
   elseif tltype.isNil(t) then

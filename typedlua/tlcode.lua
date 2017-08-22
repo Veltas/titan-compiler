@@ -168,7 +168,7 @@ function code_exp (exp, fmt)
   elseif tag == "False" then
     return "false"
   elseif tag == "Number" then
-    return tostring(exp[1])
+    return tostring(exp[1][1])
   elseif tag == "String" then
     return '"' .. fix_str(exp[1]) .. '"'
   elseif tag == "Function" then

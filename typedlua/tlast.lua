@@ -28,7 +28,7 @@ expr:
   | `Dots
   | `True
   | `False
-  | `Number{ <number> }
+  | `Number{ num }
   | `String{ <string> }
   | `Function{ { ident* { `Dots type? }? } typelist? block }
   | `Table{ ( `Pair{ expr expr } | expr )* }
@@ -36,6 +36,10 @@ expr:
   | `Paren{ expr }       -- significant to cut multiple values returns
   | apply
   | lhs
+
+num:
+  `Integer{ <number> }
+  | `Float{ <number> }
 
 apply:
   `Call{ expr expr* }
@@ -271,9 +275,19 @@ function tlast.exprFalse (pos)
   return { tag = "False", pos = pos }
 end
 
--- exprNumber : (number, number) -> (expr)
+-- exprNumber : (number, expr) -> (expr)
 function tlast.exprNumber (pos, num)
   return { tag = "Number", pos = pos, [1] = num }
+end
+
+-- exprFloat : (number, number) -> (expr)
+function tlast.exprFloat (pos, num)
+  return { tag = "Float", pos = pos, [1] = num }
+end
+
+-- exprInteger : (number, number) -> (expr)
+function tlast.exprInteger (pos, num)
+  return { tag = "Integer", pos = pos, [1] = num }
 end
 
 -- exprString : (number, string) -> (expr)
@@ -431,7 +445,7 @@ local function name2str (name)
 end
 
 local function number2str (n)
-  return string.format('"%s"', tostring(n))
+  return string.format('`%s "%s"', n.tag, tostring(n[1]))
 end
 
 local function string2str (s)
@@ -442,7 +456,11 @@ function type2str (t)
   local tag = t.tag
   local str = "`" .. tag
   if tag == "TLiteral" then
-    str = str .. " " .. tostring(t[1])
+    if type(t[1]) == "table" then
+      str = str .. " " .. tostring(t[1][1])
+    else
+      str = str .. " " .. tostring(t[1])
+    end
   elseif tag == "TBase" then
     str = str .. " " .. t[1]
   elseif tag == "TNil" or
@@ -566,7 +584,7 @@ function exp2str (exp)
      tag == "True" or
      tag == "False" then
   elseif tag == "Number" then
-    str = str .. " " .. number2str(exp[1])
+    str = str .. "{ " .. number2str(exp[1]) .. " }"
   elseif tag == "String" then
     str = str .. " " .. string2str(exp[1])
   elseif tag == "Function" then

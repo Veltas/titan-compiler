@@ -148,7 +148,7 @@ local f1 = 1.
 local f2 = 1.1
 ]=]
 e = [=[
-{ `Local{ { `Id "f1" }, { `Number "1.0" } }, `Local{ { `Id "f2" }, { `Number "1.1" } } }
+{ `Local{{ `Id "f1" },{ `Number{ `Float "1.0" } } }, `Local{{ `Id "f2" },{ `Number{ `Float "1.1" } } } }
 ]=]
 
 r = parse(s)
@@ -159,7 +159,7 @@ local f1 = 1.e-1
 local f2 = 1.e1
 ]=]
 e = [=[
-{ `Local{ { `Id "f1" }, { `Number "0.1" } }, `Local{ { `Id "f2" }, { `Number "10.0" } } }
+{ `Local{{ `Id "f1" },{ `Number{ `Float "0.1" } } }, `Local{{ `Id "f2" },{ `Number{ `Float "10.0" } } } }
 ]=]
 
 r = parse(s)
@@ -170,7 +170,7 @@ local f1 = 1.1e+1
 local f2 = 1.1e1
 ]=]
 e = [=[
-{ `Local{ { `Id "f1" }, { `Number "11.0" } }, `Local{ { `Id "f2" }, { `Number "11.0" } } }
+{ `Local{{ `Id "f1" },{ `Number{ `Float "11.0" } } }, `Local{{ `Id "f2" },{ `Number{ `Float "11.0" } } } }
 ]=]
 
 r = parse(s)
@@ -181,7 +181,7 @@ local f1 = .1
 local f2 = .1e1
 ]=]
 e = [=[
-{ `Local{ { `Id "f1" }, { `Number "0.1" } }, `Local{ { `Id "f2" }, { `Number "1.0" } } }
+{ `Local{{ `Id "f1" },{ `Number{ `Float "0.1" } } }, `Local{{ `Id "f2" },{ `Number{ `Float "1.0" } } } }
 ]=]
 
 r = parse(s)
@@ -192,7 +192,7 @@ local f1 = 1E1
 local f2 = 1e-1
 ]=]
 e = [=[
-{ `Local{ { `Id "f1" }, { `Number "10.0" } }, `Local{ { `Id "f2" }, { `Number "0.1" } } }
+{ `Local{{ `Id "f1" },{ `Number{ `Float "10.0" } } }, `Local{{ `Id "f2" },{ `Number{ `Float "0.1" } } } }
 ]=]
 
 r = parse(s)
@@ -205,7 +205,7 @@ local i = 1
 local h = 0xff
 ]=]
 e = [=[
-{ `Local{ { `Id "i" }, { `Number "1" } }, `Local{ { `Id "h" }, { `Number "255" } } }
+{ `Local{{ `Id "i" },{ `Number{ `Integer "1" } } }, `Local{{ `Id "h" },{ `Number{ `Integer "255" } } } }
 ]=]
 
 r = parse(s)
@@ -216,7 +216,7 @@ local h = 0x76c
 local i = 4294967296 -- 2^32
 ]=]
 e = [=[
-{ `Local{ { `Id "h" }, { `Number "1900" } }, `Local{ { `Id "i" }, { `Number "4294967296" } } }
+{ `Local{{ `Id "h" },{ `Number{ `Integer "1900" } } }, `Local{{ `Id "i" },{ `Number{ `Integer "4294967296" } } } }
 ]=]
 
 r = parse(s)
@@ -527,7 +527,7 @@ s = [=[
 local test = function (...) return ...,0 end
 ]=]
 e = [=[
-{ `Local{ { `Id "test" }, { `Function{ { `Dots }, { `Return{ `Dots, `Number "0" } } } } } }
+{ `Local{{ `Id "test" },{ `Function{{ `Dots },{ `Return{ `Dots, `Number{ `Integer "0" } } } } } } }
 ]=]
 
 r = parse(s)
@@ -539,7 +539,7 @@ s = [=[
 local arithmetic = 1 - 2 * 3 + 4
 ]=]
 e = [=[
-{ `Local{ { `Id "arithmetic" }, { `Op{ "add", `Op{ "sub", `Number "1", `Op{ "mul", `Number "2", `Number "3" } }, `Number "4" } } } }
+{ `Local{{ `Id "arithmetic" },{ `Op{"add", `Op{"sub", `Number{ `Integer "1" }, `Op{"mul", `Number{ `Integer "2" }, `Number{ `Integer "3" } } }, `Number{ `Integer "4" } } } } }
 ]=]
 
 r = parse(s)
@@ -549,7 +549,7 @@ s = [=[
 local pow = -3^-2^2
 ]=]
 e = [=[
-{ `Local{ { `Id "pow" }, { `Op{ "unm", `Op{ "pow", `Number "3", `Op{ "unm", `Op{ "pow", `Number "2", `Number "2" } } } } } } }
+{ `Local{{ `Id "pow" },{ `Op{"unm", `Op{"pow", `Number{ `Integer "3" }, `Op{"unm", `Op{"pow", `Number{ `Integer "2" }, `Number{ `Integer "2" } } } } } } } }
 ]=]
 
 r = parse(s)
@@ -559,7 +559,7 @@ s = [=[
 q, r, f = 3//2, 3%2, 3/2
 ]=]
 e = [=[
-{ `Set{ { `Index{ `Id "_ENV", `String "q" }, `Index{ `Id "_ENV", `String "r" }, `Index{ `Id "_ENV", `String "f" } }, { `Op{ "idiv", `Number "3", `Number "2" }, `Op{ "mod", `Number "3", `Number "2" }, `Op{ "div", `Number "3", `Number "2" } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "q" }, `Index{ `Id "_ENV", `String "r" }, `Index{ `Id "_ENV", `String "f" } },{ `Op{"idiv", `Number{ `Integer "3" }, `Number{ `Integer "2" } }, `Op{"mod", `Number{ `Integer "3" }, `Number{ `Integer "2" } }, `Op{"div", `Number{ `Integer "3" }, `Number{ `Integer "2" } } } } }
 ]=]
 
 r = parse(s)
@@ -571,7 +571,7 @@ s = [=[
 a = f()[1]
 ]=]
 e = [=[
-{ `Set{ { `Index{ `Id "_ENV", `String "a" } }, { `Index{ `Call{ `Index{ `Id "_ENV", `String "f" } }, `Number "1" } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "a" } },{ `Index{ `Call{ `Index{ `Id "_ENV", `String "f" } }, `Number{ `Integer "1" } } } } }
 ]=]
 
 r = parse(s)
@@ -581,7 +581,7 @@ s = [=[
 a()[1] = 1;
 ]=]
 e = [=[
-{ `Set{ { `Index{ `Call{ `Index{ `Id "_ENV", `String "a" } }, `Number "1" } }, { `Number "1" } } }
+{ `Set{{ `Index{ `Call{ `Index{ `Id "_ENV", `String "a" } }, `Number{ `Integer "1" } } },{ `Number{ `Integer "1" } } } }
 ]=]
 
 r = parse(s)
@@ -591,7 +591,7 @@ s = [=[
 i = a.f(1)
 ]=]
 e = [=[
-{ `Set{ { `Index{ `Id "_ENV", `String "i" } }, { `Call{ `Index{ `Index{ `Id "_ENV", `String "a" }, `String "f" }, `Number "1" } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "i" } },{ `Call{ `Index{ `Index{ `Id "_ENV", `String "a" }, `String "f" }, `Number{ `Integer "1" } } } } }
 ]=]
 
 r = parse(s)
@@ -601,7 +601,7 @@ s = [=[
 i = a[f(1)]
 ]=]
 e = [=[
-{ `Set{ { `Index{ `Id "_ENV", `String "i" } }, { `Index{ `Index{ `Id "_ENV", `String "a" }, `Call{ `Index{ `Id "_ENV", `String "f" }, `Number "1" } } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "i" } },{ `Index{ `Index{ `Id "_ENV", `String "a" }, `Call{ `Index{ `Id "_ENV", `String "f" }, `Number{ `Integer "1" } } } } } }
 ]=]
 
 r = parse(s)
@@ -612,7 +612,7 @@ a[f()] = sub
 i = i + 1
 ]=]
 e = [=[
-{ `Set{ { `Index{ `Index{ `Id "_ENV", `String "a" }, `Call{ `Index{ `Id "_ENV", `String "f" } } } }, { `Index{ `Id "_ENV", `String "sub" } } }, `Set{ { `Index{ `Id "_ENV", `String "i" } }, { `Op{ "add", `Index{ `Id "_ENV", `String "i" }, `Number "1" } } } }
+{ `Set{{ `Index{ `Index{ `Id "_ENV", `String "a" }, `Call{ `Index{ `Id "_ENV", `String "f" } } } },{ `Index{ `Id "_ENV", `String "sub" } } }, `Set{{ `Index{ `Id "_ENV", `String "i" } },{ `Op{"add", `Index{ `Id "_ENV", `String "i" }, `Number{ `Integer "1" } } } } }
 ]=]
 
 r = parse(s)
@@ -622,7 +622,7 @@ s = [=[
 a:b(1)._ = some_value
 ]=]
 e = [=[
-{ `Set{ { `Index{ `Invoke{ `Index{ `Id "_ENV", `String "a" }, `String "b", `Number "1" }, `String "_" } }, { `Index{ `Id "_ENV", `String "some_value" } } } }
+{ `Set{{ `Index{ `Invoke{ `Index{ `Id "_ENV", `String "a" }, `String "b", `Number{ `Integer "1" } }, `String "_" } },{ `Index{ `Id "_ENV", `String "some_value" } } } }
 ]=]
 
 r = parse(s)
@@ -634,7 +634,7 @@ s = [=[
 b = 1 & 0 | 1 ~ 1
 ]=]
 e = [=[
-{ `Set{ { `Index{ `Id "_ENV", `String "b" } }, { `Op{ "bor", `Op{ "band", `Number "1", `Number "0" }, `Op{ "bxor", `Number "1", `Number "1" } } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "b" } },{ `Op{"bor", `Op{"band", `Number{ `Integer "1" }, `Number{ `Integer "0" } }, `Op{"bxor", `Number{ `Integer "1" }, `Number{ `Integer "1" } } } } } }
 ]=]
 
 r = parse(s)
@@ -644,7 +644,7 @@ s = [=[
 b = 1 & 0 | 1 >> 1 ~ 1
 ]=]
 e = [=[
-{ `Set{ { `Index{ `Id "_ENV", `String "b" } }, { `Op{ "bor", `Op{ "band", `Number "1", `Number "0" }, `Op{ "bxor", `Op{ "shr", `Number "1", `Number "1" }, `Number "1" } } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "b" } },{ `Op{"bor", `Op{"band", `Number{ `Integer "1" }, `Number{ `Integer "0" } }, `Op{"bxor", `Op{"shr", `Number{ `Integer "1" }, `Number{ `Integer "1" } }, `Number{ `Integer "1" } } } } } }
 ]=]
 
 r = parse(s)
@@ -658,7 +658,7 @@ while 1 do
 end
 ]=]
 e = [=[
-{ `While{ `Number "1", { `Break } } }
+{ `While{ `Number{ `Integer "1" },{ `Break } } }
 ]=]
 
 r = parse(s)
@@ -673,7 +673,7 @@ while 1 do
 end
 ]=]
 e = [=[
-{ `While{ `Number "1", { `While{ `Number "1", { `Break } }, `Break } } }
+{ `While{ `Number{ `Integer "1" },{ `While{ `Number{ `Integer "1" },{ `Break } }, `Break } } }
 ]=]
 
 r = parse(s)
@@ -685,7 +685,7 @@ repeat
 until 1
 ]=]
 e = [=[
-{ `Repeat{ { `If{ `Op{ "gt", `Number "2", `Number "1" }, { `Break } } }, `Number "1" } }
+{ `Repeat{{ `If{ `Op{"gt", `Number{ `Integer "2" }, `Number{ `Integer "1" } },{ `Break } } }, `Number{ `Integer "1" } } }
 ]=]
 
 r = parse(s)
@@ -701,7 +701,7 @@ for i=1,10 do
 end
 ]=]
 e = [=[
-{ `Fornum{ `Id "i", `Number "1", `Number "10", { `Do{ `Break, `Break, `Return } } } }
+{ `Fornum{ `Id "i", `Number{ `Integer "1" }, `Number{ `Integer "10" },{ `Do{ `Break, `Break, `Return } } } }
 ]=]
 
 r = parse(s)
@@ -716,7 +716,7 @@ do
 end
 ]=]
 e = [=[
-{ `Do{ `Local{ { `Id "var" }, { `Op{ "add", `Number "2", `Number "2" } } }, `Return } }
+{ `Do{ `Local{{ `Id "var" },{ `Op{"add", `Number{ `Integer "2" }, `Number{ `Integer "2" } } } }, `Return } }
 ]=]
 
 r = parse(s)
@@ -741,7 +741,7 @@ s = [=[
 local concat1 = 1 .. 2^3
 ]=]
 e = [=[
-{ `Local{ { `Id "concat1" }, { `Op{ "concat", `Number "1", `Op{ "pow", `Number "2", `Number "3" } } } } }
+{ `Local{{ `Id "concat1" },{ `Op{"concat", `Number{ `Integer "1" }, `Op{"pow", `Number{ `Integer "2" }, `Number{ `Integer "3" } } } } } }
 ]=]
 
 r = parse(s)
@@ -777,7 +777,7 @@ s = [=[
 for i = 1 , 10 , 2 do end
 ]=]
 e = [=[
-{ `Fornum{ `Id "i", `Number "1", `Number "10", `Number "2", {  } } }
+{ `Fornum{ `Id "i", `Number{ `Integer "1" }, `Number{ `Integer "10" }, `Number{ `Integer "2" },{ } } }
 ]=]
 
 r = parse(s)
@@ -787,7 +787,7 @@ s = [=[
 for i=1,10 do end
 ]=]
 e = [=[
-{ `Fornum{ `Id "i", `Number "1", `Number "10", {  } } }
+{ `Fornum{ `Id "i", `Number{ `Integer "1" }, `Number{ `Integer "10" },{ } } }
 ]=]
 
 r = parse(s)
@@ -861,7 +861,7 @@ gl_f_ct = 0
 print( f("1st call") < f("2nd call") )
 ]=]
 e = [=[
-{ `Set{{ `Index{ `Id "_ENV", `String "gl_f_ct" } },{ `Number "0" } }, `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ },{ `If{ `Op{"le", `Index{ `Id "_ENV", `String "gl_f_ct" }, `Number "0" },{ `Set{{ `Index{ `Id "_ENV", `String "gl_f_ct" } },{ `Number "1" } }, `Return{ `Number "1000" } } }, `Return{ `Op{"unm", `Number "1000" } } } } } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Op{"gt", `Call{ `Index{ `Id "_ENV", `String "f" }, `String "1st call" }, `Call{ `Index{ `Id "_ENV", `String "f" }, `String "2nd call" } } }, `Set{{ `Index{ `Id "_ENV", `String "gl_f_ct" } },{ `Number "0" } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Op{"lt", `Call{ `Index{ `Id "_ENV", `String "f" }, `String "1st call" }, `Call{ `Index{ `Id "_ENV", `String "f" }, `String "2nd call" } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "gl_f_ct" } },{ `Number{ `Integer "0" } } }, `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ },{ `If{ `Op{"le", `Index{ `Id "_ENV", `String "gl_f_ct" }, `Number{ `Integer "0" } },{ `Set{{ `Index{ `Id "_ENV", `String "gl_f_ct" } },{ `Number{ `Integer "1" } } }, `Return{ `Number{ `Integer "1000" } } } }, `Return{ `Op{"unm", `Number{ `Integer "1000" } } } } } } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Op{"gt", `Call{ `Index{ `Id "_ENV", `String "f" }, `String "1st call" }, `Call{ `Index{ `Id "_ENV", `String "f" }, `String "2nd call" } } }, `Set{{ `Index{ `Id "_ENV", `String "gl_f_ct" } },{ `Number{ `Integer "0" } } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Op{"lt", `Call{ `Index{ `Id "_ENV", `String "f" }, `String "1st call" }, `Call{ `Index{ `Id "_ENV", `String "f" }, `String "2nd call" } } } }
 ]=]
 
 r = parse(s)
@@ -989,7 +989,7 @@ else
 end
 ]=]
 e = [=[
-{ `If{ `Index{ `Id "_ENV", `String "a" }, { `Return{ `Index{ `Id "_ENV", `String "a" } } }, { `Local{ { `Id "c" }, { `Index{ `Id "_ENV", `String "d" } } }, `Set{ { `Index{ `Id "_ENV", `String "d" } }, { `Op{ "add", `Index{ `Id "_ENV", `String "d" }, `Number "1" } } }, `Return{ `Index{ `Id "_ENV", `String "d" } } } } }
+{ `If{ `Index{ `Id "_ENV", `String "a" },{ `Return{ `Index{ `Id "_ENV", `String "a" } } },{ `Local{{ `Id "c" },{ `Index{ `Id "_ENV", `String "d" } } }, `Set{{ `Index{ `Id "_ENV", `String "d" } },{ `Op{"add", `Index{ `Id "_ENV", `String "d" }, `Number{ `Integer "1" } } } }, `Return{ `Index{ `Id "_ENV", `String "d" } } } } }
 ]=]
 
 r = parse(s)
@@ -1127,7 +1127,7 @@ s = [=[
 local a = 1 , 1 + 2, 5.1
 ]=]
 e = [=[
-{ `Local{ { `Id "a" }, { `Number "1", `Op{ "add", `Number "1", `Number "2" }, `Number "5.1" } } }
+{ `Local{{ `Id "a" },{ `Number{ `Integer "1" }, `Op{"add", `Number{ `Integer "1" }, `Number{ `Integer "2" } }, `Number{ `Float "5.1" } } } }
 ]=]
 
 r = parse(s)
@@ -1137,7 +1137,7 @@ s = [=[
 local a,b,c = 1.9
 ]=]
 e = [=[
-{ `Local{ { `Id "a", `Id "b", `Id "c" }, { `Number "1.9" } } }
+{ `Local{{ `Id "a", `Id "b", `Id "c" },{ `Number{ `Float "1.9" } } } }
 ]=]
 
 r = parse(s)
@@ -1179,7 +1179,7 @@ s = [=[
 local relational = 1 < 2 >= 3 == 4 ~= 5 < 6 <= 7
 ]=]
 e = [=[
-{ `Local{{ `Id "relational" },{ `Op{"le", `Op{"lt", `Op{"ne", `Op{"eq", `Op{"ge", `Op{"lt", `Number "1", `Number "2" }, `Number "3" }, `Number "4" }, `Number "5" }, `Number "6" }, `Number "7" } } } }
+{ `Local{{ `Id "relational" },{ `Op{"le", `Op{"lt", `Op{"ne", `Op{"eq", `Op{"ge", `Op{"lt", `Number{ `Integer "1" }, `Number{ `Integer "2" } }, `Number{ `Integer "3" } }, `Number{ `Integer "4" } }, `Number{ `Integer "5" } }, `Number{ `Integer "6" } }, `Number{ `Integer "7" } } } } }
 ]=]
 
 r = parse(s)
@@ -1194,7 +1194,7 @@ repeat
 until a < 1
 ]=]
 e = [=[
-{ `Repeat{ { `Local{ { `Id "a", `Id "b", `Id "c" }, { `Op{ "add", `Number "1", `Number "1" }, `Op{ "add", `Number "2", `Number "2" }, `Op{ "add", `Number "3", `Number "3" } } }, `Break }, `Op{ "lt", `Index{ `Id "_ENV", `String "a" }, `Number "1" } } }
+{ `Repeat{{ `Local{{ `Id "a", `Id "b", `Id "c" },{ `Op{"add", `Number{ `Integer "1" }, `Number{ `Integer "1" } }, `Op{"add", `Number{ `Integer "2" }, `Number{ `Integer "2" } }, `Op{"add", `Number{ `Integer "3" }, `Number{ `Integer "3" } } } }, `Break }, `Op{"lt", `Index{ `Id "_ENV", `String "a" }, `Number{ `Integer "1" } } } }
 ]=]
 
 r = parse(s)
@@ -1216,7 +1216,7 @@ s = [=[
 return 1
 ]=]
 e = [=[
-{ `Return{ `Number "1" } }
+{ `Return{ `Number{ `Integer "1" } } }
 ]=]
 
 r = parse(s)
@@ -1226,7 +1226,7 @@ s = [=[
 return 1,1-2*3+4,"alo"
 ]=]
 e = [=[
-{ `Return{ `Number "1", `Op{ "add", `Op{ "sub", `Number "1", `Op{ "mul", `Number "2", `Number "3" } }, `Number "4" }, `String "alo" } }
+{ `Return{ `Number{ `Integer "1" }, `Op{"add", `Op{"sub", `Number{ `Integer "1" }, `Op{"mul", `Number{ `Integer "2" }, `Number{ `Integer "3" } } }, `Number{ `Integer "4" } }, `String "alo" } }
 ]=]
 
 r = parse(s)
@@ -1246,7 +1246,7 @@ s = [=[
 return 1;
 ]=]
 e = [=[
-{ `Return{ `Number "1" } }
+{ `Return{ `Number{ `Integer "1" } } }
 ]=]
 
 r = parse(s)
@@ -1256,7 +1256,7 @@ s = [=[
 return 1,1-2*3+4,"alo";
 ]=]
 e = [=[
-{ `Return{ `Number "1", `Op{ "add", `Op{ "sub", `Number "1", `Op{ "mul", `Number "2", `Number "3" } }, `Number "4" }, `String "alo" } }
+{ `Return{ `Number{ `Integer "1" }, `Op{"add", `Op{"sub", `Number{ `Integer "1" }, `Op{"mul", `Number{ `Integer "2" }, `Number{ `Integer "3" } } }, `Number{ `Integer "4" } }, `String "alo" } }
 ]=]
 
 r = parse(s)
@@ -1268,7 +1268,7 @@ s = [=[
 local t = { [1] = "alo", alo = 1, 2; }
 ]=]
 e = [=[
-{ `Local{ { `Id "t" }, { `Table{ `Pair{ `Number "1", `String "alo" }, `Pair{ `String "alo", `Number "1" }, `Number "2" } } } }
+{ `Local{{ `Id "t" },{ `Table{ `Pair{ `Number{ `Integer "1" }, `String "alo" }, `Pair{ `String "alo", `Number{ `Integer "1" } }, `Number{ `Integer "2" } } } } }
 ]=]
 
 r = parse(s)
@@ -1278,7 +1278,7 @@ s = [=[
 local t = { 1.5 }
 ]=]
 e = [=[
-{ `Local{ { `Id "t" }, { `Table{ `Number "1.5" } } } }
+{ `Local{{ `Id "t" },{ `Table{ `Number{ `Float "1.5" } } } } }
 ]=]
 
 r = parse(s)
@@ -1294,7 +1294,7 @@ local t = {1,2;
 5}
 ]=]
 e = [=[
-{ `Local{ { `Id "t" }, { `Table{ `Number "1", `Number "2", `Number "3", `Number "4", `Number "5" } } } }
+{ `Local{{ `Id "t" },{ `Table{ `Number{ `Integer "1" }, `Number{ `Integer "2" }, `Number{ `Integer "3" }, `Number{ `Integer "4" }, `Number{ `Integer "5" } } } } }
 ]=]
 
 r = parse(s)
@@ -1310,7 +1310,7 @@ local t = {[1]=1,[2]=2;
 [5]=5}
 ]=]
 e = [=[
-{ `Local{ { `Id "t" }, { `Table{ `Pair{ `Number "1", `Number "1" }, `Pair{ `Number "2", `Number "2" }, `Pair{ `Number "3", `Number "3" }, `Pair{ `Number "4", `Number "4" }, `Pair{ `Number "5", `Number "5" } } } } }
+{ `Local{{ `Id "t" },{ `Table{ `Pair{ `Number{ `Integer "1" }, `Number{ `Integer "1" } }, `Pair{ `Number{ `Integer "2" }, `Number{ `Integer "2" } }, `Pair{ `Number{ `Integer "3" }, `Number{ `Integer "3" } }, `Pair{ `Number{ `Integer "4" }, `Number{ `Integer "4" } }, `Pair{ `Number{ `Integer "5" }, `Number{ `Integer "5" } } } } } }
 ]=]
 
 r = parse(s)
@@ -1388,7 +1388,7 @@ do
 end
 ]=]
 e = [=[
-{ `Local{ { `Id "i" }, { `Number "0" } }, `While{ `Paren{ `Op{ "lt", `Id "i", `Number "10" } }, { `Set{ { `Id "i" }, { `Op{ "add", `Id "i", `Number "1" } } } } } }
+{ `Local{{ `Id "i" },{ `Number{ `Integer "0" } } }, `While{ `Paren{ `Op{"lt", `Id "i", `Number{ `Integer "10" } } },{ `Set{{ `Id "i" },{ `Op{"add", `Id "i", `Number{ `Integer "1" } } } } } } }
 ]=]
 
 r = parse(s)
@@ -2911,7 +2911,7 @@ s = [=[
 local x:value, y:value, z:value = 1, "foo"
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TValue, `Id "y":`TValue, `Id "z":`TValue }, { `Number "1", `String "foo" } } }
+{ `Local{{ `Id "x":`TValue, `Id "y":`TValue, `Id "z":`TValue },{ `Number{ `Integer "1" }, `String "foo" } } }
 ]=]
 
 r = typecheck(s)
@@ -2921,7 +2921,7 @@ s = [=[
 local x, y, z = 1, "foo", false
 ]=]
 e = [=[
-{ `Local{ { `Id "x", `Id "y", `Id "z" }, { `Number "1", `String "foo", `False } } }
+{ `Local{{ `Id "x", `Id "y", `Id "z" },{ `Number{ `Integer "1" }, `String "foo", `False } } }
 ]=]
 
 r = typecheck(s)
@@ -2931,7 +2931,7 @@ s = [=[
 local x:number, y:string, z:boolean = 1, "foo", false
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TBase number, `Id "y":`TBase string, `Id "z":`TBase boolean }, { `Number "1", `String "foo", `False } } }
+{ `Local{{ `Id "x":`TBase number, `Id "y":`TBase string, `Id "z":`TBase boolean },{ `Number{ `Integer "1" }, `String "foo", `False } } }
 ]=]
 
 r = typecheck(s)
@@ -2951,7 +2951,7 @@ s = [=[
 local x:number?, y:number|nil = 1
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TUnion{ `TBase number, `TNil }, `Id "y":`TUnion{ `TBase number, `TNil } }, { `Number "1" } } }
+{ `Local{{ `Id "x":`TUnion{ `TBase number, `TNil }, `Id "y":`TUnion{ `TBase number, `TNil } },{ `Number{ `Integer "1" } } } }
 ]=]
 
 r = typecheck(s)
@@ -2961,7 +2961,7 @@ s = [=[
 local x:number = 1 + 1
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TBase number }, { `Op{ "add", `Number "1", `Number "1" } } } }
+{ `Local{{ `Id "x":`TBase number },{ `Op{"add", `Number{ `Integer "1" }, `Number{ `Integer "1" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -2991,7 +2991,7 @@ s = [=[
 local x:boolean, y:boolean = 1 == 2, "foo" == "bar"
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TBase boolean, `Id "y":`TBase boolean }, { `Op{ "eq", `Number "1", `Number "2" }, `Op{ "eq", `String "foo", `String "bar" } } } }
+{ `Local{{ `Id "x":`TBase boolean, `Id "y":`TBase boolean },{ `Op{"eq", `Number{ `Integer "1" }, `Number{ `Integer "2" } }, `Op{"eq", `String "foo", `String "bar" } } } }
 ]=]
 
 r = typecheck(s)
@@ -3001,7 +3001,7 @@ s = [=[
 local x:boolean, y:boolean = 1 < 2, "foo" < "bar"
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TBase boolean, `Id "y":`TBase boolean }, { `Op{ "lt", `Number "1", `Number "2" }, `Op{ "lt", `String "foo", `String "bar" } } } }
+{ `Local{{ `Id "x":`TBase boolean, `Id "y":`TBase boolean },{ `Op{"lt", `Number{ `Integer "1" }, `Number{ `Integer "2" } }, `Op{"lt", `String "foo", `String "bar" } } } }
 ]=]
 
 r = typecheck(s)
@@ -3011,7 +3011,7 @@ s = [=[
 local x:nil, y:boolean = nil and 1, false and 1
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TNil, `Id "y":`TBase boolean }, { `Op{ "and", `Nil, `Number "1" }, `Op{ "and", `False, `Number "1" } } } }
+{ `Local{{ `Id "x":`TNil, `Id "y":`TBase boolean },{ `Op{"and", `Nil, `Number{ `Integer "1" } }, `Op{"and", `False, `Number{ `Integer "1" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3021,7 +3021,7 @@ s = [=[
 local x:number, y:string? = 1 and 2, "foo" and nil
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TBase number, `Id "y":`TUnion{ `TBase string, `TNil } }, { `Op{ "and", `Number "1", `Number "2" }, `Op{ "and", `String "foo", `Nil } } } }
+{ `Local{{ `Id "x":`TBase number, `Id "y":`TUnion{ `TBase string, `TNil } },{ `Op{"and", `Number{ `Integer "1" }, `Number{ `Integer "2" } }, `Op{"and", `String "foo", `Nil } } } }
 ]=]
 
 r = typecheck(s)
@@ -3031,7 +3031,7 @@ s = [=[
 local x:number, y:number = nil or 1, false or 1
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TBase number, `Id "y":`TBase number }, { `Op{ "or", `Nil, `Number "1" }, `Op{ "or", `False, `Number "1" } } } }
+{ `Local{{ `Id "x":`TBase number, `Id "y":`TBase number },{ `Op{"or", `Nil, `Number{ `Integer "1" } }, `Op{"or", `False, `Number{ `Integer "1" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3041,7 +3041,7 @@ s = [=[
 local x:number, y:string? = 1 or 2, "foo" or nil
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TBase number, `Id "y":`TUnion{ `TBase string, `TNil } }, { `Op{ "or", `Number "1", `Number "2" }, `Op{ "or", `String "foo", `Nil } } } }
+{ `Local{{ `Id "x":`TBase number, `Id "y":`TUnion{ `TBase string, `TNil } },{ `Op{"or", `Number{ `Integer "1" }, `Number{ `Integer "2" } }, `Op{"or", `String "foo", `Nil } } } }
 ]=]
 
 r = typecheck(s)
@@ -3052,7 +3052,7 @@ local x:number?
 local y:number = x or 0
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TUnion{ `TBase number, `TNil } }, {  } }, `Local{ { `Id "y":`TBase number }, { `Op{ "or", `Id "x", `Number "0" } } } }
+{ `Local{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ } }, `Local{{ `Id "y":`TBase number },{ `Op{"or", `Id "x", `Number{ `Integer "0" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3072,7 +3072,7 @@ s = [=[
 local x:number = -1
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TBase number }, { `Op{ "unm", `Number "1" } } } }
+{ `Local{{ `Id "x":`TBase number },{ `Op{"unm", `Number{ `Integer "1" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3092,7 +3092,7 @@ s = [=[
 while 1 do break end
 ]=]
 e = [=[
-{ `While{ `Number "1", { `Break } } }
+{ `While{ `Number{ `Integer "1" },{ `Break } } }
 ]=]
 
 r = typecheck(s)
@@ -3102,7 +3102,7 @@ s = [=[
 repeat break until 1
 ]=]
 e = [=[
-{ `Repeat{ { `Break }, `Number "1" } }
+{ `Repeat{{ `Break }, `Number{ `Integer "1" } } }
 ]=]
 
 r = typecheck(s)
@@ -3112,7 +3112,7 @@ s = [=[
 if 1 then local x = 1 end
 ]=]
 e = [=[
-{ `If{ `Number "1", { `Local{ { `Id "x" }, { `Number "1" } } } } }
+{ `If{ `Number{ `Integer "1" },{ `Local{{ `Id "x" },{ `Number{ `Integer "1" } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3122,7 +3122,7 @@ s = [=[
 if 1 then local x = 1 else local x = "foo" end
 ]=]
 e = [=[
-{ `If{ `Number "1", { `Local{ { `Id "x" }, { `Number "1" } } }, { `Local{ { `Id "x" }, { `String "foo" } } } } }
+{ `If{ `Number{ `Integer "1" },{ `Local{{ `Id "x" },{ `Number{ `Integer "1" } } } },{ `Local{{ `Id "x" },{ `String "foo" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3142,7 +3142,7 @@ else
 end
 ]=]
 e = [=[
-{ `If{ `Number "1", { `Local{ { `Id "x" }, { `Number "1" } } }, `Number "2", { `Local{ { `Id "x" }, { `Number "2" } } }, `Number "3", { `Local{ { `Id "x" }, { `Number "3" } } }, `Number "4", { `Local{ { `Id "x" }, { `Number "4" } } }, { `Local{ { `Id "x" }, { `String "foo" } } } } }
+{ `If{ `Number{ `Integer "1" },{ `Local{{ `Id "x" },{ `Number{ `Integer "1" } } } }, `Number{ `Integer "2" },{ `Local{{ `Id "x" },{ `Number{ `Integer "2" } } } }, `Number{ `Integer "3" },{ `Local{{ `Id "x" },{ `Number{ `Integer "3" } } } }, `Number{ `Integer "4" },{ `Local{{ `Id "x" },{ `Number{ `Integer "4" } } } },{ `Local{{ `Id "x" },{ `String "foo" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3158,7 +3158,7 @@ end
 end
 ]=]
 e = [=[
-{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Id "x",{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number "1" } } } },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } } } } } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Id "x",{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number{ `Integer "1" } } } } },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3174,7 +3174,7 @@ end
 end
 ]=]
 e = [=[
-{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Op{"not", `Id "x" },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number "1" } } } } } } } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Op{"not", `Id "x" },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number{ `Integer "1" } } } } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3190,7 +3190,7 @@ end
 end
 ]=]
 e = [=[
-{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "number" },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number "1" } } } },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } } } } } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "number" },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number{ `Integer "1" } } } } },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3206,7 +3206,7 @@ end
 end
 ]=]
 e = [=[
-{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Op{"ne", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "number" },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number "1" } } } } } } } } } }
+{ `Set{{ `Index{ `Id "_ENV", `String "f" } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TNil } },{ `If{ `Op{"ne", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "number" },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number{ `Integer "1" } } } } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3229,7 +3229,7 @@ y = x
 end
 ]=]
 e = [=[
-{ `Localrec{{ `Id "f":`TFunction{ `TTuple{ `TUnion{ `TBase number, `TBase string, `TNil }, `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TBase string, `TNil } },{ `Local{{ `Id "y" },{ `Id "x" } }, `If{ `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "number" },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number "1" } } } }, `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "y" }, `String "string" },{ `Set{{ `Id "y" },{ `Op{"concat", `Id "y", `String "hello" } } } }, `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "string" },{ `Set{{ `Id "x" },{ `Op{"concat", `Id "x", `String "hello" } } } }, `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "y" }, `String "number" },{ `Set{{ `Id "y" },{ `Op{"add", `Id "y", `Number "1" } } } } }, `Set{{ `Id "x" },{ `Id "y" } }, `Set{{ `Id "y" },{ `Id "x" } } } } } } }
+{ `Localrec{{ `Id "f":`TFunction{ `TTuple{ `TUnion{ `TBase number, `TBase string, `TNil }, `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } } },{ `Function{{ `Id "x":`TUnion{ `TBase number, `TBase string, `TNil } },{ `Local{{ `Id "y" },{ `Id "x" } }, `If{ `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "number" },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number{ `Integer "1" } } } } }, `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "y" }, `String "string" },{ `Set{{ `Id "y" },{ `Op{"concat", `Id "y", `String "hello" } } } }, `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "string" },{ `Set{{ `Id "x" },{ `Op{"concat", `Id "x", `String "hello" } } } }, `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "y" }, `String "number" },{ `Set{{ `Id "y" },{ `Op{"add", `Id "y", `Number{ `Integer "1" } } } } } }, `Set{{ `Id "x" },{ `Id "y" } }, `Set{{ `Id "y" },{ `Id "x" } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3254,7 +3254,7 @@ x = y
 y = x
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TUnion{ `TBase number, `TBase string, `TNil } }, {  } }, `Local{ { `Id "y" }, { `Id "x" } }, `If{ `Op{ "eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "nil" }, { `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } }, `Op{ "eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "y" }, `String "nil" }, { `Call{ `Index{ `Id "_ENV", `String "print" }, `String "y is nil" } }, `Op{ "eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "string" }, { `Set{ { `Id "x" }, { `Op{ "concat", `Id "x", `String "hello" } } } }, `Op{ "eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "y" }, `String "number" }, { `Set{ { `Id "y" }, { `Op{ "add", `Id "y", `Number "1" } } } }, { `Set{ { `Id "x" }, { `Op{ "add", `Id "x", `Number "1" } } }, `Set{ { `Id "y" }, { `Op{ "concat", `Id "y", `String "hello" } } } } }, `Set{ { `Id "x" }, { `Id "y" } }, `Set{ { `Id "y" }, { `Id "x" } } }
+{ `Local{{ `Id "x":`TUnion{ `TBase number, `TBase string, `TNil } },{ } }, `Local{{ `Id "y" },{ `Id "x" } }, `If{ `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "nil" },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "x is nil" } }, `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "y" }, `String "nil" },{ `Call{ `Index{ `Id "_ENV", `String "print" }, `String "y is nil" } }, `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "x" }, `String "string" },{ `Set{{ `Id "x" },{ `Op{"concat", `Id "x", `String "hello" } } } }, `Op{"eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "y" }, `String "number" },{ `Set{{ `Id "y" },{ `Op{"add", `Id "y", `Number{ `Integer "1" } } } } },{ `Set{{ `Id "x" },{ `Op{"add", `Id "x", `Number{ `Integer "1" } } } }, `Set{{ `Id "y" },{ `Op{"concat", `Id "y", `String "hello" } } } } }, `Set{{ `Id "x" },{ `Id "y" } }, `Set{{ `Id "y" },{ `Id "x" } } }
 ]=]
 
 r = typecheck(s)
@@ -3264,7 +3264,7 @@ s = [=[
 for i = 1, 10 do local x = i end
 ]=]
 e = [=[
-{ `Fornum{ `Id "i", `Number "1", `Number "10", { `Local{ { `Id "x" }, { `Id "i" } } } } }
+{ `Fornum{ `Id "i", `Number{ `Integer "1" }, `Number{ `Integer "10" }, { `Local{ { `Id "x" }, { `Id "i" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3274,7 +3274,7 @@ s = [=[
 for i = 10, 1, -1 do local x = i end
 ]=]
 e = [=[
-{ `Fornum{ `Id "i", `Number "10", `Number "1", `Op{ "unm", `Number "1" }, { `Local{ { `Id "x" }, { `Id "i" } } } } }
+{ `Fornum{ `Id "i", `Number{ `Integer "10" }, `Number{ `Integer "1" }, `Op{ "unm", `Number{ `Integer "1" } }, { `Local{ { `Id "x" }, { `Id "i" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3685,7 +3685,7 @@ s = [=[
 local function f ():(any) return 1 end
 ]=]
 e = [=[
-{ `Localrec{ { `Id "f":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TAny, `TVararg{ `TNil } } } }, { `Function{ {  }:`TTuple{ `TAny, `TVararg{ `TNil } }, { `Return{ `Number "1" } } } } } }
+{ `Localrec{ { `Id "f":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TAny, `TVararg{ `TNil } } } }, { `Function{ {  }:`TTuple{ `TAny, `TVararg{ `TNil } }, { `Return{ `Number{ `Integer "1" } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3707,7 +3707,7 @@ local x:number = 1
 local x:string = "foo"
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TBase number }, { `Number "1" } }, `Local{ { `Id "x":`TBase string }, { `String "foo" } } }
+{ `Local{ { `Id "x":`TBase number }, { `Number{ `Integer "1" } } }, `Local{ { `Id "x":`TBase string }, { `String "foo" } } }
 ]=]
 
 r = typecheck(s)
@@ -3743,7 +3743,7 @@ local function fib (n:number):number
 end
 ]=]
 e = [=[
-{ `Localrec{ { `Id "fib":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "n":`TBase number }:`TTuple{ `TBase number, `TVararg{ `TNil } }, { `If{ `Op{ "eq", `Id "n", `Number "0" }, { `Return{ `Number "0" } }, `Op{ "eq", `Id "n", `Number "1" }, { `Return{ `Number "1" } }, { `Return{ `Op{ "add", `Call{ `Id "fib", `Op{ "sub", `Id "n", `Number "1" } }, `Call{ `Id "fib", `Op{ "sub", `Id "n", `Number "2" } } } } } } } } } } }
+{ `Localrec{ { `Id "fib":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "n":`TBase number }:`TTuple{ `TBase number, `TVararg{ `TNil } }, { `If{ `Op{ "eq", `Id "n", `Number{ `Integer "0" } }, { `Return{ `Number{ `Integer "0" } } }, `Op{ "eq", `Id "n", `Number{ `Integer "1" } }, { `Return{ `Number{ `Integer "1" } } }, { `Return{ `Op{ "add", `Call{ `Id "fib", `Op{ "sub", `Id "n", `Number{ `Integer "1" } } }, `Call{ `Id "fib", `Op{ "sub", `Id "n", `Number{ `Integer "2" } } } } } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3794,7 +3794,7 @@ for n = x, x, x do end
 for k in x do end
 ]=]
 e = [=[
-{ `Local{ { `Id "x":`TAny }, { `Number "1" } }, `Fornum{ `Id "n", `Id "x", `Id "x", `Id "x", {  } }, `Forin{ { `Id "k" }, { `Id "x" }, {  } } }
+{ `Local{ { `Id "x":`TAny }, { `Number{ `Integer "1" } } }, `Fornum{ `Id "n", `Id "x", `Id "x", `Id "x", {  } }, `Forin{ { `Id "k" }, { `Id "x" }, {  } } }
 ]=]
 
 r = typecheck(s)
@@ -3874,7 +3874,7 @@ function mod:foo()
 end
 ]=]
 e = [=[
-{ `Local{ { `Id "mod" }, { `Table{ `Pair{ `String "x", `Number "0" } } } }, `Set{ { `Index{ `Id "mod", `String "foo" } }, { `Function{ { `Id "self":`TSelf }, { `Localrec{ { `Id "inner":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ {  }, { `Return{ `Index{ `Id "self", `String "x" } } } } } }, `Return } } } } }
+{ `Local{ { `Id "mod" }, { `Table{ `Pair{ `String "x", `Number{ `Integer "0" } } } } }, `Set{ { `Index{ `Id "mod", `String "foo" } }, { `Function{ { `Id "self":`TSelf }, { `Localrec{ { `Id "inner":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ {  }, { `Return{ `Index{ `Id "self", `String "x" } } } } } }, `Return } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3888,7 +3888,7 @@ function mod:foo()
 end
 ]=]
 e = [=[
-{ `Local{{ `Id "mod" },{ `Table{ `Pair{ `String "x", `Number "0" } } } }, `Set{{ `Index{ `Id "mod", `String "foo" } },{ `Function{{ `Id "self":`TSelf },{ `Return{ `Function{{ },{ `Return{ `Index{ `Id "self", `String "x" } } } } } } } } } }
+{ `Local{{ `Id "mod" },{ `Table{ `Pair{ `String "x", `Number{ `Integer "0" } } } } }, `Set{{ `Index{ `Id "mod", `String "foo" } },{ `Function{{ `Id "self":`TSelf },{ `Return{ `Function{{ },{ `Return{ `Index{ `Id "self", `String "x" } } } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3912,7 +3912,7 @@ local function h (x:number):(number)?
 end
 ]=]
 e = [=[
-{ `Localrec{{ `Id "f":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } } },{ `Function{{ }:`TTuple{ `TVararg{ `TNil } },{ `Return } } } }, `Localrec{{ `Id "g":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } },{ `Function{{ `Id "x":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } },{ `If{ `Op{"lt", `Id "x", `Number "0" },{ `Return{ `Nil, `String "negative" } },{ `Return{ `Id "x" } } } } } } }, `Localrec{{ `Id "h":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } },{ `Function{{ `Id "x":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } },{ `If{ `Op{"gt", `Id "x", `Number "0" },{ `Return{ `Id "x" } },{ `Return{ `Call{ `Id "g", `Id "x" } } } } } } } } }
+{ `Localrec{{ `Id "f":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } } },{ `Function{{ }:`TTuple{ `TVararg{ `TNil } },{ `Return } } } }, `Localrec{{ `Id "g":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } },{ `Function{{ `Id "x":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } },{ `If{ `Op{"lt", `Id "x", `Number{ `Integer "0" } },{ `Return{ `Nil, `String "negative" } },{ `Return{ `Id "x" } } } } } } }, `Localrec{{ `Id "h":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } },{ `Function{{ `Id "x":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } },{ `If{ `Op{"gt", `Id "x", `Number{ `Integer "0" } },{ `Return{ `Id "x" } },{ `Return{ `Call{ `Id "g", `Id "x" } } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3932,7 +3932,7 @@ local x = 5
 print(factorial(x))
 ]=]
 e = [=[
-{ `Localrec{ { `Id "factorial":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "n":`TBase number }:`TTuple{ `TBase number, `TVararg{ `TNil } }, { `If{ `Op{ "eq", `Id "n", `Number "0" }, { `Return{ `Number "1" } }, { `Return{ `Op{ "mul", `Id "n", `Call{ `Id "factorial", `Op{ "sub", `Id "n", `Number "1" } } } } } } } } } }, `Local{ { `Id "x" }, { `Number "5" } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Call{ `Id "factorial", `Id "x" } } }
+{ `Localrec{ { `Id "factorial":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "n":`TBase number }:`TTuple{ `TBase number, `TVararg{ `TNil } }, { `If{ `Op{ "eq", `Id "n", `Number{ `Integer "0" } }, { `Return{ `Number{ `Integer "1" } } }, { `Return{ `Op{ "mul", `Id "n", `Call{ `Id "factorial", `Op{ "sub", `Id "n", `Number{ `Integer "1" } } } } } } } } } } }, `Local{ { `Id "x" }, { `Number{ `Integer "5" } } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Call{ `Id "factorial", `Id "x" } } }
 ]=]
 
 r = typecheck(s)
@@ -3952,7 +3952,7 @@ local function distance(x, y)
 end
 ]=]
 e = [=[
-{ `Localrec{ { `Id "abs":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "n":`TBase number }, { `If{ `Op{ "lt", `Id "n", `Number "0" }, { `Return{ `Op{ "unm", `Id "n" } } }, { `Return{ `Id "n" } } } } } } }, `Localrec{ { `Id "distance":`TFunction{ `TTuple{ `TAny, `TAny, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "x":`TAny, `Id "y":`TAny }, { `Return{ `Call{ `Id "abs", `Op{ "sub", `Id "x", `Id "y" } } } } } } } }
+{ `Localrec{ { `Id "abs":`TFunction{ `TTuple{ `TBase number, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "n":`TBase number }, { `If{ `Op{ "lt", `Id "n", `Number{ `Integer "0" } }, { `Return{ `Op{ "unm", `Id "n" } } }, { `Return{ `Id "n" } } } } } } }, `Localrec{ { `Id "distance":`TFunction{ `TTuple{ `TAny, `TAny, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "x":`TAny, `Id "y":`TAny }, { `Return{ `Call{ `Id "abs", `Op{ "sub", `Id "x", `Id "y" } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -3969,7 +3969,7 @@ local x, y, z = multiple(), multiple()
 print(sum(multiple(), multiple()))
 ]=]
 e = [=[
-{ `Localrec{ { `Id "multiple":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TBase number, `TBase string, `TVararg{ `TNil } } } }, { `Function{ {  }, { `Return{ `Number "2", `String "foo" } } } } }, `Localrec{ { `Id "sum":`TFunction{ `TTuple{ `TBase number, `TBase number, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "x":`TBase number, `Id "y":`TBase number }, { `Return{ `Op{ "add", `Id "x", `Id "y" } } } } } }, `Local{ { `Id "x", `Id "y", `Id "z" }, { `Call{ `Id "multiple" }, `Call{ `Id "multiple" } } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Call{ `Id "sum", `Call{ `Id "multiple" }, `Call{ `Id "multiple" } } } }
+{ `Localrec{ { `Id "multiple":`TFunction{ `TTuple{ `TVararg{ `TValue } }, `TTuple{ `TBase number, `TBase string, `TVararg{ `TNil } } } }, { `Function{ {  }, { `Return{ `Number{ `Integer "2" }, `String "foo" } } } } }, `Localrec{ { `Id "sum":`TFunction{ `TTuple{ `TBase number, `TBase number, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "x":`TBase number, `Id "y":`TBase number }, { `Return{ `Op{ "add", `Id "x", `Id "y" } } } } } }, `Local{ { `Id "x", `Id "y", `Id "z" }, { `Call{ `Id "multiple" }, `Call{ `Id "multiple" } } }, `Call{ `Index{ `Id "_ENV", `String "print" }, `Call{ `Id "sum", `Call{ `Id "multiple" }, `Call{ `Id "multiple" } } } }
 ]=]
 
 r = typecheck(s)
@@ -4056,7 +4056,7 @@ local function overload (s1:string, s2:string|number)
 end
 ]=]
 e = [=[
-{ `Localrec{ { `Id "rep":`TFunction{ `TTuple{ `TBase string, `TBase number, `TUnion{ `TBase string, `TNil }, `TVararg{ `TValue } }, `TTuple{ `TBase string, `TVararg{ `TNil } } } }, { `Function{ { `Id "s":`TBase string, `Id "n":`TBase number, `Id "sep":`TUnion{ `TBase string, `TNil } }:`TTuple{ `TBase string, `TVararg{ `TNil } }, { `Set{ { `Id "sep" }, { `Op{ "or", `Id "sep", `String "" } } }, `Local{ { `Id "r" }, { `String "" } }, `Fornum{ `Id "i", `Number "1", `Op{ "sub", `Id "n", `Number "1" }, { `Set{ { `Id "r" }, { `Op{ "concat", `Id "r", `Op{ "concat", `Id "s", `Id "sep" } } } } } }, `Return{ `Op{ "concat", `Id "r", `Id "s" } } } } } }, `Localrec{ { `Id "overload":`TFunction{ `TTuple{ `TBase string, `TUnion{ `TBase string, `TBase number }, `TVararg{ `TValue } }, `TTuple{ `TBase string, `TVararg{ `TNil } } } }, { `Function{ { `Id "s1":`TBase string, `Id "s2":`TUnion{ `TBase string, `TBase number } }, { `If{ `Op{ "eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "s2" }, `String "string" }, { `Return{ `Op{ "concat", `Id "s1", `Id "s2" } } }, { `Return{ `Call{ `Id "rep", `Id "s1", `Id "s2" } } } } } } } } }
+{ `Localrec{ { `Id "rep":`TFunction{ `TTuple{ `TBase string, `TBase number, `TUnion{ `TBase string, `TNil }, `TVararg{ `TValue } }, `TTuple{ `TBase string, `TVararg{ `TNil } } } }, { `Function{ { `Id "s":`TBase string, `Id "n":`TBase number, `Id "sep":`TUnion{ `TBase string, `TNil } }:`TTuple{ `TBase string, `TVararg{ `TNil } }, { `Set{ { `Id "sep" }, { `Op{ "or", `Id "sep", `String "" } } }, `Local{ { `Id "r" }, { `String "" } }, `Fornum{ `Id "i", `Number{ `Integer "1" }, `Op{ "sub", `Id "n", `Number{ `Integer "1" } }, { `Set{ { `Id "r" }, { `Op{ "concat", `Id "r", `Op{ "concat", `Id "s", `Id "sep" } } } } } }, `Return{ `Op{ "concat", `Id "r", `Id "s" } } } } } }, `Localrec{ { `Id "overload":`TFunction{ `TTuple{ `TBase string, `TUnion{ `TBase string, `TBase number }, `TVararg{ `TValue } }, `TTuple{ `TBase string, `TVararg{ `TNil } } } }, { `Function{ { `Id "s1":`TBase string, `Id "s2":`TUnion{ `TBase string, `TBase number } }, { `If{ `Op{ "eq", `Call{ `Index{ `Id "_ENV", `String "type" }, `Id "s2" }, `String "string" }, { `Return{ `Op{ "concat", `Id "s1", `Id "s2" } } }, { `Return{ `Call{ `Id "rep", `Id "s1", `Id "s2" } } } } } } } } }
 ]=]
 
 r = typecheck(s)
@@ -4099,7 +4099,7 @@ else
 end
 ]=]
 e = [=[
-{ `Localrec{ { `Id "idiv":`TFunction{ `TTuple{ `TBase number, `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } }, { `Function{ { `Id "d1":`TBase number, `Id "d2":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } }, { `If{ `Op{ "eq", `Id "d2", `Number "0" }, { `Return{ `Nil, `String "division by zero" } }, { `Local{ { `Id "r" }, { `Op{ "mod", `Id "d1", `Id "d2" } } }, `Local{ { `Id "q" }, { `Op{ "div", `Paren{ `Op{ "sub", `Id "d1", `Id "r" } }, `Id "d2" } } }, `Return{ `Id "q", `Id "r" } } } } } } }, `Local{ { `Id "n1", `Id "n2" }, { `Number "4", `Number "4" } }, `Local{ { `Id "q", `Id "r" }, { `Call{ `Id "idiv", `Id "n1", `Id "n2" } } }, `Local{ { `Id "x":`TBase number, `Id "msg":`TBase string }, { `Number "0", `String "" } }, `If{ `Id "q", { `Set{ { `Id "x" }, { `Op{ "add", `Id "q", `Id "r" } } } }, { `Set{ { `Id "msg" }, { `Id "r" } } } } }
+{ `Localrec{ { `Id "idiv":`TFunction{ `TTuple{ `TBase number, `TBase number, `TVararg{ `TValue } }, `TUnionlist{ `TTuple{ `TBase number, `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } } } }, { `Function{ { `Id "d1":`TBase number, `Id "d2":`TBase number }:`TUnionlist{ `TTuple{ `TBase number, `TBase number, `TVararg{ `TNil } }, `TTuple{ `TNil, `TBase string, `TVararg{ `TNil } } }, { `If{ `Op{ "eq", `Id "d2", `Number{ `Integer "0" } }, { `Return{ `Nil, `String "division by zero" } }, { `Local{ { `Id "r" }, { `Op{ "mod", `Id "d1", `Id "d2" } } }, `Local{ { `Id "q" }, { `Op{ "div", `Paren{ `Op{ "sub", `Id "d1", `Id "r" } }, `Id "d2" } } }, `Return{ `Id "q", `Id "r" } } } } } } }, `Local{ { `Id "n1", `Id "n2" }, { `Number{ `Integer "4" }, `Number{ `Integer "4" } } }, `Local{ { `Id "q", `Id "r" }, { `Call{ `Id "idiv", `Id "n1", `Id "n2" } } }, `Local{ { `Id "x":`TBase number, `Id "msg":`TBase string }, { `Number{ `Integer "0" }, `String "" } }, `If{ `Id "q", { `Set{ { `Id "x" }, { `Op{ "add", `Id "q", `Id "r" } } } }, { `Set{ { `Id "msg" }, { `Id "r" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -4132,7 +4132,7 @@ local x:number? = t.foo
 local y:number = t["bar"] or 0
 ]=]
 e = [=[
-{ `Local{ { `Id "t":`TTable{ `TBase string:`TUnion{ `TBase number, `TNil } } }, { `Table{ `Pair{ `String "foo", `Number "1" } } } }, `Local{ { `Id "x":`TUnion{ `TBase number, `TNil } }, { `Index{ `Id "t", `String "foo" } } }, `Local{ { `Id "y":`TBase number }, { `Op{ "or", `Index{ `Id "t", `String "bar" }, `Number "0" } } } }
+{ `Local{ { `Id "t":`TTable{ `TBase string:`TUnion{ `TBase number, `TNil } } }, { `Table{ `Pair{ `String "foo", `Number{ `Integer "1" } } } } }, `Local{ { `Id "x":`TUnion{ `TBase number, `TNil } }, { `Index{ `Id "t", `String "foo" } } }, `Local{ { `Id "y":`TBase number }, { `Op{ "or", `Index{ `Id "t", `String "bar" }, `Number{ `Integer "0" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -4169,7 +4169,7 @@ local x = days[1]
 local y = days[8]
 ]=]
 e = [=[
-{ `Local{ { `Id "days":`TTable{ `TBase number:`TUnion{ `TBase string, `TNil } } }, { `Table{ `String "Sunday", `String "Monday", `String "Tuesday", `String "Wednesday", `String "Thursday", `String "Friday", `String "Saturday" } } }, `Local{ { `Id "x" }, { `Index{ `Id "days", `Number "1" } } }, `Local{ { `Id "y" }, { `Index{ `Id "days", `Number "8" } } } }
+{ `Local{ { `Id "days":`TTable{ `TBase number:`TUnion{ `TBase string, `TNil } } }, { `Table{ `String "Sunday", `String "Monday", `String "Tuesday", `String "Wednesday", `String "Thursday", `String "Friday", `String "Saturday" } } }, `Local{ { `Id "x" }, { `Index{ `Id "days", `Number{ `Integer "1" } } } }, `Local{ { `Id "y" }, { `Index{ `Id "days", `Number{ `Integer "8" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -4238,7 +4238,7 @@ for i = 1, #t do
 end
 ]=]
 e = [=[
-{ `Local{ { `Id "t" }, { `Table{ `Dots } } }, `Fornum{ `Id "i", `Number "1", `Op{ "len", `Id "t" }, { `Call{ `Index{ `Id "_ENV", `String "print" }, `Index{ `Id "t", `Id "i" } } } } }
+{ `Local{ { `Id "t" }, { `Table{ `Dots } } }, `Fornum{ `Id "i", `Number{ `Integer "1" }, `Op{ "len", `Id "t" }, { `Call{ `Index{ `Id "_ENV", `String "print" }, `Index{ `Id "t", `Id "i" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -4261,7 +4261,7 @@ t[1] = "foo"
 t.foo = 1
 ]=]
 e = [=[
-{ `Local{ { `Id "t" }, { `Table{ `Dots } } }, `Set{ { `Index{ `Id "t", `Number "1" } }, { `String "foo" } }, `Set{ { `Index{ `Id "t", `String "foo" } }, { `Number "1" } } }
+{ `Local{ { `Id "t" }, { `Table{ `Dots } } }, `Set{ { `Index{ `Id "t", `Number{ `Integer "1" } } }, { `String "foo" } }, `Set{ { `Index{ `Id "t", `String "foo" } }, { `Number{ `Integer "1" } } } }
 ]=]
 
 r = typecheck(s)
@@ -4275,7 +4275,7 @@ local t4:{"foo":number, "bar":number, number:string|nil} = { foo = 1, bar = 2, .
 local t5:{"foo":number, "bar":number, 3:string|nil, 2:number} = { foo = 1, bar = 2, ..., 3 }
 ]=]
 e = [=[
-{ `Local{ { `Id "t1":`TTable{ `TLiteral foo:`TBase number, `TBase number:`TUnion{ `TBase string, `TNil } } }, { `Table{ `Pair{ `String "foo", `Number "1" }, `Dots } } }, `Local{ { `Id "t2":`TTable{ `TLiteral foo:`TBase number, `TLiteral 2:`TUnion{ `TBase string, `TNil }, `TLiteral bar:`TBase number } }, { `Table{ `Pair{ `String "foo", `Number "1" }, `Dots, `Pair{ `String "bar", `Number "2" } } } }, `Local{ { `Id "t3":`TTable{ `TLiteral 1:`TUnion{ `TBase string, `TNil }, `TLiteral foo:`TBase number } }, { `Table{ `Dots, `Pair{ `String "foo", `Number "1" } } } }, `Local{ { `Id "t4":`TTable{ `TLiteral foo:`TBase number, `TLiteral bar:`TBase number, `TBase number:`TUnion{ `TBase string, `TNil } } }, { `Table{ `Pair{ `String "foo", `Number "1" }, `Pair{ `String "bar", `Number "2" }, `Dots } } }, `Local{ { `Id "t5":`TTable{ `TLiteral foo:`TBase number, `TLiteral bar:`TBase number, `TLiteral 3:`TUnion{ `TBase string, `TNil }, `TLiteral 2:`TBase number } }, { `Table{ `Pair{ `String "foo", `Number "1" }, `Pair{ `String "bar", `Number "2" }, `Dots, `Number "3" } } } }
+{ `Local{ { `Id "t1":`TTable{ `TLiteral foo:`TBase number, `TBase number:`TUnion{ `TBase string, `TNil } } }, { `Table{ `Pair{ `String "foo", `Number{ `Integer "1" } }, `Dots } } }, `Local{ { `Id "t2":`TTable{ `TLiteral foo:`TBase number, `TLiteral 2:`TUnion{ `TBase string, `TNil }, `TLiteral bar:`TBase number } }, { `Table{ `Pair{ `String "foo", `Number{ `Integer "1" } }, `Dots, `Pair{ `String "bar", `Number{ `Integer "2" } } } } }, `Local{ { `Id "t3":`TTable{ `TLiteral 1:`TUnion{ `TBase string, `TNil }, `TLiteral foo:`TBase number } }, { `Table{ `Dots, `Pair{ `String "foo", `Number{ `Integer "1" } } } } }, `Local{ { `Id "t4":`TTable{ `TLiteral foo:`TBase number, `TLiteral bar:`TBase number, `TBase number:`TUnion{ `TBase string, `TNil } } }, { `Table{ `Pair{ `String "foo", `Number{ `Integer "1" } }, `Pair{ `String "bar", `Number{ `Integer "2" } }, `Dots } } }, `Local{ { `Id "t5":`TTable{ `TLiteral foo:`TBase number, `TLiteral bar:`TBase number, `TLiteral 3:`TUnion{ `TBase string, `TNil }, `TLiteral 2:`TBase number } }, { `Table{ `Pair{ `String "foo", `Number{ `Integer "1" } }, `Pair{ `String "bar", `Number{ `Integer "2" } }, `Dots, `Number{ `Integer "3" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -4393,7 +4393,7 @@ end
 fn{a="", b = false, c = 33}
 ]=]
 e = [=[
-{ `Interface{ Test, `TTable{ `TLiteral a:`TBase string, `TLiteral b:`TBase boolean, `TLiteral c:`TUnion{ `TBase number, `TNil } } }, `Localrec{ { `Id "fn":`TFunction{ `TTuple{ `TTable{ `TLiteral a:`TBase string, `TLiteral b:`TBase boolean, `TLiteral c:`TUnion{ `TBase number, `TNil } }, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "x":`TTable{ `TLiteral a:`TBase string, `TLiteral b:`TBase boolean, `TLiteral c:`TUnion{ `TBase number, `TNil } } }:`TTuple{ `TBase number, `TVararg{ `TNil } }, { `Return{ `Number "44" } } } } }, `Call{ `Id "fn", `Table{ `Pair{ `String "a", `String "" }, `Pair{ `String "b", `False }, `Pair{ `String "c", `Number "33" } } } }
+{ `Interface{ Test, `TTable{ `TLiteral a:`TBase string, `TLiteral b:`TBase boolean, `TLiteral c:`TUnion{ `TBase number, `TNil } } }, `Localrec{ { `Id "fn":`TFunction{ `TTuple{ `TTable{ `TLiteral a:`TBase string, `TLiteral b:`TBase boolean, `TLiteral c:`TUnion{ `TBase number, `TNil } }, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } }, { `Function{ { `Id "x":`TTable{ `TLiteral a:`TBase string, `TLiteral b:`TBase boolean, `TLiteral c:`TUnion{ `TBase number, `TNil } } }:`TTuple{ `TBase number, `TVararg{ `TNil } }, { `Return{ `Number{ `Integer "44" } } } } } }, `Call{ `Id "fn", `Table{ `Pair{ `String "a", `String "" }, `Pair{ `String "b", `False }, `Pair{ `String "c", `Number{ `Integer "33" } } } } }
 ]=]
 
 r = typecheck(s)
@@ -4676,7 +4676,7 @@ local circle1 = Circle:new(0, 5, 10)
 local circle2:Circle = Circle:new(10, 10, 15)
 ]=]
 e = [=[
-{ `Interface{ Shape, `TTable{ `TLiteral x:`TBase number, `TLiteral y:`TBase number, `TLiteral new:`TFunction{ `TTuple{ `TSelf, `TBase number, `TBase number, `TVararg{ `TValue } }, `TTuple{ `TSelf, `TVararg{ `TNil } } }, `TLiteral move:`TFunction{ `TTuple{ `TSelf, `TBase number, `TBase number, `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } } } }, `Local{ { `Id "Shape" }, { `Table{ `Pair{ `String "x", `Number "0" }, `Pair{ `String "y", `Number "0" } } } }, `Set{ { `Index{ `Id "Shape", `String "new" } }, { `Function{ { `Id "self":`TSelf, `Id "x":`TBase number, `Id "y":`TBase number }, { `Local{ { `Id "s" }, { `Call{ `Index{ `Id "_ENV", `String "setmetatable" }, `Table, `Table{ `Pair{ `String "__index", `Id "self" } } } } }, `Set{ { `Index{ `Id "s", `String "x" } }, { `Id "x" } }, `Set{ { `Index{ `Id "s", `String "y" } }, { `Id "y" } }, `Return{ `Id "s" } } } } }, `Set{ { `Index{ `Id "Shape", `String "move" } }, { `Function{ { `Id "self":`TSelf, `Id "dx":`TBase number, `Id "dy":`TBase number }, { `Set{ { `Index{ `Id "self", `String "x" } }, { `Op{ "add", `Index{ `Id "self", `String "x" }, `Id "dx" } } }, `Set{ { `Index{ `Id "self", `String "y" } }, { `Op{ "add", `Index{ `Id "self", `String "y" }, `Id "dy" } } } } } } }, `Local{ { `Id "shape1" }, { `Invoke{ `Id "Shape", `String "new", `Number "0", `Number "5" } } }, `Local{ { `Id "shape2":`TVariable Shape }, { `Invoke{ `Id "Shape", `String "new", `Number "10", `Number "10" } } }, `Interface{ Circle, `TTable{ `TLiteral x:`TBase number, `TLiteral y:`TBase number, `TLiteral radius:`TBase number, `TLiteral new:`TFunction{ `TTuple{ `TSelf, `TBase number, `TBase number, `TValue, `TVararg{ `TValue } }, `TTuple{ `TSelf, `TVararg{ `TNil } } }, `TLiteral move:`TFunction{ `TTuple{ `TSelf, `TBase number, `TBase number, `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } }, `TLiteral area:`TFunction{ `TTuple{ `TSelf, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } } }, `Local{ { `Id "Circle" }, { `Call{ `Index{ `Id "_ENV", `String "setmetatable" }, `Table, `Table{ `Pair{ `String "__index", `Id "Shape" } } } } }, `Set{ { `Index{ `Id "Circle", `String "radius" } }, { `Number "0" } }, `Set{ { `Index{ `Id "Circle", `String "new" } }, { `Function{ { `Id "self":`TSelf, `Id "x":`TBase number, `Id "y":`TBase number, `Id "radius":`TValue }, { `Local{ { `Id "c" }, { `Call{ `Index{ `Id "_ENV", `String "setmetatable" }, `Invoke{ `Id "Shape", `String "new", `Id "x", `Id "y" }, `Table{ `Pair{ `String "__index", `Id "self" } } } } }, `Set{ { `Index{ `Id "c", `String "radius" } }, { `Op{ "or", `Call{ `Index{ `Id "_ENV", `String "tonumber" }, `Id "radius" }, `Number "0" } } }, `Return{ `Id "c" } } } } }, `Set{ { `Index{ `Id "Circle", `String "area" } }, { `Function{ { `Id "self":`TSelf }, { `Return{ `Op{ "mul", `Op{ "mul", `Number "3.14", `Index{ `Id "self", `String "radius" } }, `Index{ `Id "self", `String "radius" } } } } } } }, `Local{ { `Id "circle1" }, { `Invoke{ `Id "Circle", `String "new", `Number "0", `Number "5", `Number "10" } } }, `Local{ { `Id "circle2":`TVariable Circle }, { `Invoke{ `Id "Circle", `String "new", `Number "10", `Number "10", `Number "15" } } } }
+{ `Interface{ Shape, `TTable{ `TLiteral x:`TBase number, `TLiteral y:`TBase number, `TLiteral new:`TFunction{ `TTuple{ `TSelf, `TBase number, `TBase number, `TVararg{ `TValue } }, `TTuple{ `TSelf, `TVararg{ `TNil } } }, `TLiteral move:`TFunction{ `TTuple{ `TSelf, `TBase number, `TBase number, `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } } } }, `Local{ { `Id "Shape" }, { `Table{ `Pair{ `String "x", `Number{ `Integer "0" } }, `Pair{ `String "y", `Number{ `Integer "0" } } } } }, `Set{ { `Index{ `Id "Shape", `String "new" } }, { `Function{ { `Id "self":`TSelf, `Id "x":`TBase number, `Id "y":`TBase number }, { `Local{ { `Id "s" }, { `Call{ `Index{ `Id "_ENV", `String "setmetatable" }, `Table, `Table{ `Pair{ `String "__index", `Id "self" } } } } }, `Set{ { `Index{ `Id "s", `String "x" } }, { `Id "x" } }, `Set{ { `Index{ `Id "s", `String "y" } }, { `Id "y" } }, `Return{ `Id "s" } } } } }, `Set{ { `Index{ `Id "Shape", `String "move" } }, { `Function{ { `Id "self":`TSelf, `Id "dx":`TBase number, `Id "dy":`TBase number }, { `Set{ { `Index{ `Id "self", `String "x" } }, { `Op{ "add", `Index{ `Id "self", `String "x" }, `Id "dx" } } }, `Set{ { `Index{ `Id "self", `String "y" } }, { `Op{ "add", `Index{ `Id "self", `String "y" }, `Id "dy" } } } } } } }, `Local{ { `Id "shape1" }, { `Invoke{ `Id "Shape", `String "new", `Number{ `Integer "0" }, `Number{ `Integer "5" } } } }, `Local{ { `Id "shape2":`TVariable Shape }, { `Invoke{ `Id "Shape", `String "new", `Number{ `Integer "10" }, `Number{ `Integer "10" } } } }, `Interface{ Circle, `TTable{ `TLiteral x:`TBase number, `TLiteral y:`TBase number, `TLiteral radius:`TBase number, `TLiteral new:`TFunction{ `TTuple{ `TSelf, `TBase number, `TBase number, `TValue, `TVararg{ `TValue } }, `TTuple{ `TSelf, `TVararg{ `TNil } } }, `TLiteral move:`TFunction{ `TTuple{ `TSelf, `TBase number, `TBase number, `TVararg{ `TValue } }, `TTuple{ `TVararg{ `TNil } } }, `TLiteral area:`TFunction{ `TTuple{ `TSelf, `TVararg{ `TValue } }, `TTuple{ `TBase number, `TVararg{ `TNil } } } } }, `Local{ { `Id "Circle" }, { `Call{ `Index{ `Id "_ENV", `String "setmetatable" }, `Table, `Table{ `Pair{ `String "__index", `Id "Shape" } } } } }, `Set{ { `Index{ `Id "Circle", `String "radius" } }, { `Number{ `Integer "0" } } }, `Set{ { `Index{ `Id "Circle", `String "new" } }, { `Function{ { `Id "self":`TSelf, `Id "x":`TBase number, `Id "y":`TBase number, `Id "radius":`TValue }, { `Local{ { `Id "c" }, { `Call{ `Index{ `Id "_ENV", `String "setmetatable" }, `Invoke{ `Id "Shape", `String "new", `Id "x", `Id "y" }, `Table{ `Pair{ `String "__index", `Id "self" } } } } }, `Set{ { `Index{ `Id "c", `String "radius" } }, { `Op{ "or", `Call{ `Index{ `Id "_ENV", `String "tonumber" }, `Id "radius" }, `Number{ `Integer "0" } } } }, `Return{ `Id "c" } } } } }, `Set{ { `Index{ `Id "Circle", `String "area" } }, { `Function{ { `Id "self":`TSelf }, { `Return{ `Op{ "mul", `Op{ "mul", `Number{ `Float "3.14" }, `Index{ `Id "self", `String "radius" } }, `Index{ `Id "self", `String "radius" } } } } } } }, `Local{ { `Id "circle1" }, { `Invoke{ `Id "Circle", `String "new", `Number{ `Integer "0" }, `Number{ `Integer "5" }, `Number{ `Integer "10" } } } }, `Local{ { `Id "circle2":`TVariable Circle }, { `Invoke{ `Id "Circle", `String "new", `Number{ `Integer "10" }, `Number{ `Integer "10" }, `Number{ `Integer "15" } } } } }
 ]=]
 
 r = typecheck(s)

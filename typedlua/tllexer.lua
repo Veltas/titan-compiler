@@ -7,6 +7,8 @@ local tllexer = {}
 local lpeg = require "lpeg"
 lpeg.locale(lpeg)
 
+local tlast = require "typedlua.tlast"
+
 local function getffp (s, i, t)
   return t.ffp or i, t
 end
@@ -95,9 +97,14 @@ local Expo = lpeg.S("eE") * lpeg.S("+-")^-1 * lpeg.digit^1
 local Float = (((lpeg.digit^1 * lpeg.P(".") * lpeg.digit^0) +
               (lpeg.P(".") * lpeg.digit^1)) * Expo^-1) +
               (lpeg.digit^1 * Expo)
-local Int = lpeg.digit^1
+local Integer = lpeg.digit^1
 
-tllexer.Number = lpeg.C(Hex + Float + Int) / tonumber
+tllexer.Float = lpeg.C(Float) / tonumber;
+
+tllexer.Integer = lpeg.C(Hex + Integer) / tonumber;
+
+tllexer.Number = lpeg.Cp() * tllexer.Float / tlast.exprFloat +
+                 lpeg.Cp() * tllexer.Integer / tlast.exprInteger;
 
 local ShortString = lpeg.P('"') *
                     lpeg.C(((lpeg.P('\\') * lpeg.P(1)) + (lpeg.P(1) - lpeg.P('"')))^0) *
