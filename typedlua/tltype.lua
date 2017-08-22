@@ -12,7 +12,6 @@ tltype.integer = false
 
 -- Literal : (boolean|number|string) -> (type)
 function tltype.Literal (l)
-  if type(l) == "table" then l = l[1] end -- TODO: fix this hack when implementing integer and float types
   return { tag = "TLiteral", [1] = l }
 end
 
@@ -36,6 +35,16 @@ function tltype.Str (s)
   return tltype.Literal(s)
 end
 
+-- Int : (integer) -> (type)
+function tltype.Int (i)
+  return { tag = "Integer", [1] = i }
+end
+
+-- Double : (float) -> (type)
+function tltype.Double (d)
+  return { tag = "Float", [1] = d }
+end
+
 -- isLiteral : (type) -> (boolean)
 function tltype.isLiteral (t)
   return t.tag == "TLiteral"
@@ -53,25 +62,17 @@ end
 
 -- isNum : (type) -> (boolean)
 function tltype.isNum (t)
-  return tltype.isLiteral(t) and type(t[1]) == "number"
+  return tltype.isLiteral(t) and tltype.isDouble(t[1]) or tltype.isInt(t[1])
 end
 
 -- isDouble : (type) -> (boolean)
 function tltype.isDouble (t)
-  if _VERSION == "Lua 5.3" then
-    return tltype.isLiteral(t) and math.type(t[1]) == "float"
-  else
-    return false
-  end
+  return type(t) == "table" and t.tag == "Float"
 end
 
 -- isInt : (type) -> (boolean)
 function tltype.isInt (t)
-  if _VERSION == "Lua 5.3" then
-    return tltype.isLiteral(t) and math.type(t[1]) == "integer"
-  else
-    return false
-  end
+  return type(t) == "table" and t.tag == "Integer"
 end
 
 -- isStr : (type) -> (boolean)
@@ -685,7 +686,12 @@ local subtype
 
 local function subtype_literal (env, t1, t2)
   if tltype.isLiteral(t1) and tltype.isLiteral(t2) then
-    return t1[1] == t2[1]
+    if (tltype.isInt(t1[1]) and tltype.isInt(t2[1])) or
+       (tltype.isDouble(t1[1]) and tltype.isDouble(t2[1])) then
+      return t1[1][1] == t2[1][1]
+    else
+      return t1[1] == t2[1]
+    end
   elseif tltype.isLiteral(t1) and tltype.isBase(t2) then
     if tltype.isBoolean(t2) then
       return tltype.isFalse(t1) or tltype.isTrue(t1)
@@ -694,9 +700,9 @@ local function subtype_literal (env, t1, t2)
     elseif tltype.isString(t2) then
       return tltype.isStr(t1)
     elseif tltype.isInteger(t2) then
-      return tltype.isInt(t1)
+      return tltype.isNum(t1) and tltype.isInt(t1[1])
     elseif tltype.isFloat(t2) then
-      return tltype.isDouble(t1)
+      return tltype.isNum(t1) and tltype.isDouble(t1[1])
     else
       return false
     end
@@ -1176,7 +1182,7 @@ local function type2str (t, n)
     return "built-in function " .. t[1]
   elseif tltype.isLiteral(t) then
     if type(t[1]) == "table" then
-      return string.format("%q", t[1][1])
+      return tostring(t[1][1])
     else
       return string.format("%q", t[1])
     end

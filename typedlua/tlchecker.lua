@@ -901,7 +901,7 @@ local function check_table (env, exp)
     else
       local exp1 = v
       check_exp(env, exp1)
-      t1, t2 = tltype.Literal(i), tltype.general(get_type(exp1))
+      t1, t2 = tltype.Literal(tltype.Int(i)), tltype.general(get_type(exp1))
       if k == len and tltype.isVararg(t2) then
         t1 = Integer
       end
@@ -1802,7 +1802,11 @@ function check_exp (env, exp, tself)
   elseif tag == "False" then
     set_type(exp, False)
   elseif tag == "Number" then
-    set_type(exp, tltype.Literal(exp[1]))
+    if exp[1].tag == "Integer" then
+      set_type(exp, tltype.Literal(tltype.Int(exp[1][1])))
+    else
+      set_type(exp, tltype.Literal(tltype.Double(exp[1][1])))
+    end
   elseif tag == "String" then
     set_type(exp, tltype.Literal(exp[1]))
   elseif tag == "Function" then

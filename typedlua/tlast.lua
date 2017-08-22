@@ -70,9 +70,9 @@ type:
   | `TTuple{ type type* }
   | `TVararg{ type }
 
-literal: false | true | <number> | <string>
+literal: false | true | num | <string>
 
-base: 'boolean' | 'number' | 'string'
+base: 'boolean' | 'float' | 'integer' | 'number' | 'string'
 
 field: `TField{ <string> type }
 ]]

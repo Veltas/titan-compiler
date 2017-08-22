@@ -2535,8 +2535,8 @@ print("> testing types...")
 
 local False = tltype.False()
 local True = tltype.True()
-local Double = tltype.Literal(1.1)
-local Int = tltype.Literal(1)
+local Double = tltype.Literal(tltype.Double(1.1))
+local Int = tltype.Literal(tltype.Int(1))
 local Word = tltype.Literal("w")
 
 -- base types
