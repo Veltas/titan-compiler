@@ -1,9 +1,9 @@
 #!/usr/bin/env lua
 
-local tlast = require "typedlua.tlast"
-local tlparser = require "typedlua.tlparser"
-local tlchecker = require "typedlua.tlchecker"
-local tlcode = require "typedlua.tlcode"
+local tlast = require "titan-lang.tlast"
+local tlparser = require "titan-lang.tlparser"
+local tlchecker = require "titan-lang.tlchecker"
+local tlcode = require "titan-lang.tlcode"
 
 local VERSION = "scm"
 local PROGNAME = "tlc"
@@ -80,7 +80,7 @@ local function doargs ()
         elseif option_char == "s" then
           STRICT = true
         elseif option_char == "v" then
-          io.write(string.format("Typed Lua %s\n", VERSION))
+          io.write(string.format("Titan %s\n", VERSION))
           os.exit(0)
         elseif option_char == "w" then
           WARNINGS = true
