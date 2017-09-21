@@ -5,7 +5,7 @@ Titan is a programming language, based on the syntax and semantics of [Lua](http
 be a statically-typed, ahead-of-time compiled sister language to Lua. Converting Lua code to Titan
 should yield a significant speedup, in some cases approaching the speed of C code. Unlike C, Titan
 is garbage-collected, and has nice high-level programming features such as first-class functions,
-objects, and generics. Unline other statically-typed, garbage-collected languages, Titan is
+objects, and generics. Unlike other statically-typed, garbage-collected languages, Titan is
 designed to interoperate seamlessly with Lua: Titan's native objects are kept in Lua's garbage-collected
 heap, and can be traced by Lua's garbage collector. Titan objects can be passed to Lua code,
 and Lua objects can be used by Titan code (although with a performance penalty compared to working
